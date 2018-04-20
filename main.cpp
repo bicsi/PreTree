@@ -1,21 +1,23 @@
-#include "tree_path.hpp"
+#include "tree_iter.hpp"
 #include <iostream>
 
 using namespace std;
 
 int main() {
-    PreTree_Path pt;
+    PreTree_Iter pt;
     
-    auto output = [](int it) {
-        cout << it << endl;
+    auto output = [](auto it) {
+        if (!it) cout << "NONE" << endl;
+        else cout << it->value << endl;
     };
     while (true) {
-        char c; int x; cin >> c >> x;
-        if (c == 'I') pt.insert(x);
-        if (c == 'E') pt.erase(x);
-        if (c == 'L') output(pt.lower_bound(x));
-        if (c == 'F') output(pt.find(x));
-        
+        string c; int x; cin >> c >> x;
+        if (c == "+") pt.insert(x);
+        if (c == "-") pt.erase(x);
+        // if (c == "L") output(pt.lower_bound(x));
+        if (c == "?") output(pt.find(x));
+        if (c == "D") pt.DUMP();
+
         pt.for_each([](int x) { cout << x << " "; });
         cout << endl;
     }

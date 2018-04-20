@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <functional>
 #include <cassert>
+#include <iostream>
 
 class PreTree_Iter {
     struct Node {
@@ -14,16 +15,17 @@ class PreTree_Iter {
     PNode root = new Node(-1);
 
     public:
+
+    void DUMP() { DUMP(root); }
     
     void insert(int value) { 
         PNode node = root;
-        for (int level = 31; level >= 0; --level) {
+        for (int level = BIT_COUNT - 1; level >= 0; --level) {
             int bit = get_bit(value, level);
             PNode& nxt = node->sons[bit];
-            if (nxt == nullptr) {
-                nxt = new Node(value);
-                return;
-            } else if (nxt->value == value)
+            if (nxt == nullptr || value < nxt->value)
+                nxt = push(nxt, value, level);
+            if (nxt->value == value) 
                 return;
             node = nxt;
         }
@@ -32,72 +34,90 @@ class PreTree_Iter {
 
     bool erase(int value) {
         PNode node = root;
-        for (int level = 31; level >= 0; --level) {
+        for (int level = BIT_COUNT - 1; level >= 0; --level) {
             int bit = get_bit(value, level);
             PNode& nxt = node->sons[bit];
-            if (nxt == nullptr) return false;
+            if (nxt == nullptr || value < nxt->value) return false;
             if (nxt->value == value) {
-                //nxt = extract(nxt);
+                nxt = pop(nxt);
                 return true;
             }
+            node = nxt;
         }
         return false;
     }
 
-    PNode Find(int value) {
-        return nullptr;
+    PNode find(int value) {
+        PNode node = root;
+        for (int level = BIT_COUNT - 1; level >= 0; --level) {
+            int bit = get_bit(value, level);
+            PNode& nxt = node->sons[bit];
+            if (nxt == nullptr || value < nxt->value) return nullptr;
+            if (nxt->value == value) return nxt;
+        }
+        assert(false);
     }
 
-    void ForEach(std::function<void(int)> f) { for_each(root, f); }
+    void for_each(std::function<void(int)> f) { for_each(root, f); }
 
     private:
+
+    void DUMP(PNode root) {
+        if (root == nullptr) {
+            std::cerr << "NULL ";
+            return;
+        }
+        
+        std::cerr << root->value << " ";
+        DUMP(root->sons[0]);
+        DUMP(root->sons[1]);
+    }
+
+    PNode push(PNode node, int value, int level) {
+        if (node == nullptr) return new Node(value);
+
+        PNode ret = node;
+        while (level--) {
+            std::swap(node->value, value);
+            int bit = get_bit(value, level);
+            PNode& nxt = node->sons[bit];
+            if (nxt == nullptr) {
+                nxt = new Node(value);
+                break;
+            }
+            node = nxt;
+        }
+        return ret;
+    }
+
+    PNode pop(PNode node) {
+        auto get_son = [](PNode node) -> PNode& {
+            return node->sons[0] ?: node->sons[1];
+        };
+
+        if (get_son(node) == nullptr) {
+            delete node; return nullptr;
+        }
+
+        PNode ret = node;
+        while (true) {
+            PNode& nxt = get_son(node);
+            node->value = std::move(nxt->value);
+            if (get_son(nxt) == nullptr) {
+                delete nxt; nxt = nullptr;
+                break;
+            }
+            node = nxt;
+        }
+        return ret;
+    }
     
     int get_bit(int x, int bit) { return !!(x & (1 << bit)); }
 
-    PNode lookup(PNode root, int value, int level, int type) {
-        if (root == nullptr) return nullptr;
-        if (type == 0 && !(root->value < value)) return root;
-        if (type == 1 && value < root->value) return root;
-        
-        int bit = get_bit(value, level);
-        return lookup(root->sons[bit], value, level - 1, type);
-    }
-
-    PNode pop(PNode root) {
-        if (root == nullptr) return nullptr;
-
-        delete root;
-        return nullptr;
-    }
-
-    PNode insert(PNode root, int value, int level) {
-        if (root == nullptr) 
-            return new Node(value);
-        
-        if (value == root->value) return root;
-        if (value < root->value) 
-            std::swap(value, root->value);
-        
-        int bit = get_bit(value, level);
-        root->sons[bit] = insert(root->sons[bit], value, level - 1); 
-        return root;
-    }
-    
-    PNode erase(PNode root, int value, int level) {
-        if (root == nullptr) return nullptr;
-        if (root->value == value) {
-            return pop(root);
-        }
-
-        int bit = get_bit(value, level);
-        root->sons[bit] = erase(root->sons[bit], value, level - 1);
-        return root;
-    }
-
-    void for_each(PNode root, std::function<void(int)> f) {
-        if (root == nullptr) return;
-        f(root->value);
+    void for_each(PNode node, std::function<void(int)> f) {
+        if (node == nullptr) return;
+        if (node != root) f(node->value);
         for (int i = 0; i < 2; ++i)
-            for_each(root->sons[i], f);    
+            for_each(node->sons[i], f);    
     }
 };

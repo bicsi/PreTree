@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
 #include <functional>
+#include <iostream>
 
 class PreTree_Rec {
     struct Node {
@@ -14,12 +15,12 @@ class PreTree_Rec {
 
     public:
     
-    void insert(int value) { root = insert(root, value, 31); }
+    void insert(int value) { root = insert(root, value, BIT_COUNT - 1); }
     
-    PNode lower_bound(int value) { return lookup(root, value, 31, 0); }
-    PNode upper_bound(int value) { return lookup(root, value, 31, 1); }
+    PNode lower_bound(int value) { return lookup(root, value, BIT_COUNT - 1, 0); }
+    PNode upper_bound(int value) { return lookup(root, value, BIT_COUNT - 1, 1); }
     
-    void erase(int value) { root = erase(root, value, 31); }
+    void erase(int value) { root = erase(root, value, BIT_COUNT - 1); }
         
     PNode find(int value) {
         auto ret = lower_bound(value);
@@ -28,9 +29,10 @@ class PreTree_Rec {
         return ret;
     }
 
-    void ForEach(std::function<void(int)> f) { for_each(root, f); }
+    void for_each(std::function<void(int)> f) { for_each(root, f); }
 
     int CALC() { return calc_potential(root, 31); }
+    void DUMP() { DUMP(root); std::cerr << std::endl; }
 
     int calc_potential(PNode root, int level) {
         if (root == nullptr) return 0;
@@ -81,6 +83,17 @@ class PreTree_Rec {
         root->sons[bit] = push(root->sons[bit], std::move(root->value), level - 1);
         root->value = std::move(value);
         return root;
+    }
+    
+    void DUMP(PNode root) {
+        if (root == nullptr) {
+            std::cerr << "NULL ";
+            return;
+        }
+        
+        std::cerr << root->value << " ";
+        DUMP(root->sons[0]);
+        DUMP(root->sons[1]);
     }
     
     PNode insert(PNode root, int value, int level) {
