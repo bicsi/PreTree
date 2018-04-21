@@ -2,6 +2,7 @@
 #include "ops.hpp"
 #include "tree_rec.hpp"
 #include "tree_iter.hpp"
+#include "tree_vector.hpp"
 
 using namespace std;
 
@@ -65,6 +66,7 @@ int main(int argc, char** argv) {
 
         if (tree_type == "iter") Check<PreTree_Iter>(ops);
         else if (tree_type == "rec") Check<PreTree_Rec>(ops);
+        else if (tree_type == "vec") Check<PreTree_Vec>(ops);
         else {
             cout << "UNKNOWN TREE TYPE: " << tree_type << endl;
             exit(-1);

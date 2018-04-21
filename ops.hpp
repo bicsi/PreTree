@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <bits/stdc++.h>
 
 struct Op { int t, val; };
 
@@ -16,12 +17,17 @@ std::ostream& operator<<(std::ostream& out, const Op& op) {
     return out;
 }
 
+int RandomValue() { return rand() & ((1 << BIT_COUNT) - 1); }
+
+std::vector<int> RandomValues(int size) {
+    std::vector<int> ret(size);
+    for (auto& x : ret)
+        x = RandomValue();
+    return ret;
+}
+
 std::vector<Op> GenerateOps(int value_count, int op_count) {
-    std::vector<int> values;
-    for (int i = 0; i < value_count; ++i) {
-        int value = rand() & ((1 << BIT_COUNT) - 1);
-        values.push_back(value);
-    }
+    auto values = RandomValues(value_count);
     
     int chk_all_interval = (op_count + 19) / 20;
 
@@ -34,6 +40,39 @@ std::vector<Op> GenerateOps(int value_count, int op_count) {
             ops.push_back({-1, -1});
         }
     }
+    return ops;
+}
 
+void InsertionsFromValues(std::vector<Op>& ops, std::vector<int> values) {
+    for (auto val : values) {
+        ops.push_back(Op{0, val});
+    }
+}
+
+std::vector<Op> GeneratePermutationInsertions(int value_count) {
+    std::vector<int> values(value_count);
+    iota(values.begin(), values.end(), 0);
+    random_shuffle(values.begin(), values.end());
+    std::vector<Op> ops;
+    InsertionsFromValues(ops, values);
+
+    return ops;
+}
+
+std::vector<Op> GenerateSortedInsertions(int value_count) {
+    auto values = RandomValues(value_count);
+    sort(values.begin(), values.end());
+    std::vector<Op> ops;
+    InsertionsFromValues(ops, values);
+    
+    return ops;
+}
+
+std::vector<Op> GenerateInvSortedInsertions(int value_count) {
+    auto values = RandomValues(value_count);
+    sort(values.rbegin(), values.rend());
+    std::vector<Op> ops;
+    InsertionsFromValues(ops, values);
+  
     return ops;
 }

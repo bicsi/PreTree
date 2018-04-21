@@ -20,6 +20,11 @@
         "system_error": "cpp",
         "tuple": "cpp",
         "type_traits": "cpp",
-        "locale": "cpp"
+        "locale": "cpp",
+        "iostream": "cpp",
+        "__config": "cpp",
+        "__nullptr": "cpp",
+        "__split_buffer": "cpp",
+        "list": "cpp"
     }
 }
