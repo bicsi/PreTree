@@ -3,40 +3,25 @@
 #include <functional>
 #include <cassert>
 #include <iostream>
-#include <vector>
-#include <deque>
+#include "../constants.hpp"
 
-class PreTree_Vec {
+// Implementation of PreTree
+// Iterative version
+class PreTree_Iter {
     struct Node {
         int value;
         Node* sons[2] = {nullptr, nullptr};
-        Node(int value = -1) : value(value) {}
+        Node(int value) : value(value) {}
     };    
     using PNode = Node*;
 
-    std::vector<PNode> freed;
+    PNode root = new Node(-1);
 
-    PNode alloc(int value) {
-        if (freed.empty()) {
-            PNode block = new Node[32];
-            freed.reserve(32);
-            for (int i = 0; i < 32; ++i)
-                freed.push_back(block + i);
-        } 
-        PNode ret = freed.back();
-        freed.pop_back();
-        *ret = Node(value);
-        return ret;
-    }
-    void delloc(PNode p) { freed.push_back(p); }
-
-    PNode root = alloc(-1);
-    
     public:
 
     void DUMP() { DUMP(root); }
     
-    void insert(int value) { 
+    void Insert(int value) { 
         PNode node = root;
         for (int level = BIT_COUNT - 1; level >= 0; --level) {
             int bit = get_bit(value, level);
@@ -50,7 +35,7 @@ class PreTree_Vec {
         assert(false);
     }
 
-    bool erase(int value) {
+    bool Erase(int value) {
         PNode node = root;
         for (int level = BIT_COUNT - 1; level >= 0; --level) {
             int bit = get_bit(value, level);
@@ -65,34 +50,43 @@ class PreTree_Vec {
         return false;
     }
 
-    PNode find(int value) {
+    bool Find(int value) {
         PNode node = root;
         for (int level = BIT_COUNT - 1; level >= 0; --level) {
             int bit = get_bit(value, level);
             PNode& nxt = node->sons[bit];
-            if (nxt == nullptr || value < nxt->value) return nullptr;
-            if (nxt->value == value) return nxt;
+            if (nxt == nullptr || value < nxt->value) return false;
+            if (nxt->value == value) return true;
         }
-        assert(false);
+        return false;
     }
 
-    void for_each(std::function<void(int)> f) { for_each(root, f); }
+    void ForEach(std::function<void(int)> f) { for_each(root, f); }
 
+    int Successor(int value) { 
+        PNode node = root;
+
+        PNode ret = nullptr;
+        for (int level = BIT_COUNT - 1; level >= 0; --level) {
+            int bit = get_bit(value, level);
+            PNode& nxt = node->sons[bit];
+            
+            if (bit == 0 && node->sons[1] != nullptr)
+                ret = node->sons[1];
+            
+            if (nxt == nullptr) break;
+            if (value < nxt->value) 
+                return nxt->value;
+        }
+        return ret == nullptr ? DEFAULT_VALUE : ret->value;
+    }
+    int Predecessor(int value) { return DEFAULT_VALUE; }
+    
     private:
 
-    void DUMP(PNode root) {
-        if (root == nullptr) {
-            std::cerr << "NULL ";
-            return;
-        }
-        
-        std::cerr << root->value << " ";
-        DUMP(root->sons[0]);
-        DUMP(root->sons[1]);
-    }
 
     PNode push(PNode node, int value, int level) {
-        if (node == nullptr) return alloc(value);
+        if (node == nullptr) return new Node(value);
 
         PNode ret = node;
         while (level--) {
@@ -100,7 +94,7 @@ class PreTree_Vec {
             int bit = get_bit(value, level);
             PNode& nxt = node->sons[bit];
             if (nxt == nullptr) {
-                nxt = alloc(value);
+                nxt = new Node(value);
                 break;
             }
             node = nxt;
@@ -114,7 +108,7 @@ class PreTree_Vec {
         };
 
         if (get_son(node) == nullptr) {
-            delloc(node); return nullptr;
+            delete node; return nullptr;
         }
 
         PNode ret = node;
@@ -122,7 +116,7 @@ class PreTree_Vec {
             PNode& nxt = get_son(node);
             node->value = std::move(nxt->value);
             if (get_son(nxt) == nullptr) {
-                delloc(nxt); nxt = nullptr;
+                delete nxt; nxt = nullptr;
                 break;
             }
             node = nxt;
@@ -137,5 +131,16 @@ class PreTree_Vec {
         if (node != root) f(node->value);
         for (int i = 0; i < 2; ++i)
             for_each(node->sons[i], f);    
+    }
+
+    void DUMP(PNode root) {
+        if (root == nullptr) {
+            std::cerr << "NULL ";
+            return;
+        }
+        
+        std::cerr << root->value << " ";
+        DUMP(root->sons[0]);
+        DUMP(root->sons[1]);
     }
 };

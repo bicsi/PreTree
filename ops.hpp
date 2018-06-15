@@ -1,78 +1,100 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include <bits/stdc++.h>
+#include <algorithm>
+#include <numeric>
+#include "constants.hpp"
 
-struct Op { int t, val; };
+template<typename T>
+struct Op { 
+    int t; T val; 
+    Op(int t) : t(t) {}
+    Op(int t, T val) : t(t), val(val) {}
+};
 
-std::ostream& operator<<(std::ostream& out, const Op& op) {
+template<typename T>
+std::ostream& operator<<(std::ostream& out, const Op<T>& op) {
     out << "{";
     switch (op.t) {
         case 0: out << "+ " << op.val; break;
         case 1: out << "- " << op.val; break;
         case 2: out << "? " << op.val; break;
+        case 3: out << "> " << op.val; break;
+        case 4: out << "< " << op.val; break;
         case -1: out << "DUMP"; break;
     }
     out << "}";
     return out;
 }
 
-int RandomValue() { return rand() & ((1 << BIT_COUNT) - 1); }
-
-std::vector<int> RandomValues(int size) {
-    std::vector<int> ret(size);
-    for (auto& x : ret)
-        x = RandomValue();
+template<typename T> T RandomValue();
+template<> int RandomValue() { return rand() & ((1 << BIT_COUNT) - 1); }
+template<> std::string RandomValue() {
+    std::string ret = "";
+    for (int i = 0; i < BIT_COUNT; ++i) {
+        ret += 'a' + rand() % SIGMA;
+    }
     return ret;
 }
 
-std::vector<Op> GenerateOps(int value_count, int op_count) {
-    auto values = RandomValues(value_count);
-    
+template<typename T>
+std::vector<T> RandomValues(int size) {
+    std::vector<T> ret(size);
+    for (auto& x : ret)
+        x = RandomValue<T>();
+    return ret;
+}
+
+template<typename T>
+std::vector<Op<T>> GenerateOps(int value_count, int op_count, bool insert_dumps = true) {
+    auto values = RandomValues<T>(value_count);
     int chk_all_interval = (op_count + 19) / 20;
 
-    std::vector<Op> ops;
+    std::vector<Op<T>> ops;
     for (int i = 0; i < op_count; ++i) {
-        int t = rand() % 2;
-        int val = values[rand() % values.size()];
-        ops.push_back({t, val});
-        if (i % chk_all_interval == 0) {
-            ops.push_back({-1, -1});
+        int t = OPS_TO_GENERATE[rand() % OPS_TO_GENERATE.size()];
+        T val = values[rand() % values.size()];
+        ops.push_back(Op<T>{t, val});
+        if (insert_dumps && i % chk_all_interval == 0) {
+            ops.push_back(Op<T>{-1});
         }
     }
     return ops;
 }
 
-void InsertionsFromValues(std::vector<Op>& ops, std::vector<int> values) {
+template<typename T>
+void InsertionsFromValues(std::vector<Op<T>>& ops, std::vector<T> values) {
     for (auto val : values) {
-        ops.push_back(Op{0, val});
+        ops.push_back(Op<T>{0, val});
     }
 }
 
-std::vector<Op> GeneratePermutationInsertions(int value_count) {
+std::vector<Op<int>> GeneratePermutationInsertions(int value_count) {
     std::vector<int> values(value_count);
     iota(values.begin(), values.end(), 0);
     random_shuffle(values.begin(), values.end());
-    std::vector<Op> ops;
+    std::vector<Op<int>> ops;
     InsertionsFromValues(ops, values);
 
     return ops;
 }
 
-std::vector<Op> GenerateSortedInsertions(int value_count) {
-    auto values = RandomValues(value_count);
+template<typename T>
+std::vector<Op<T>> GenerateSortedInsertions(int value_count) {
+    auto values = RandomValues<T>(value_count);
     sort(values.begin(), values.end());
-    std::vector<Op> ops;
-    InsertionsFromValues(ops, values);
+    std::vector<Op<T>> ops;
+    InsertionsFromValues<T>(ops, values);
     
     return ops;
 }
 
-std::vector<Op> GenerateInvSortedInsertions(int value_count) {
-    auto values = RandomValues(value_count);
+template<typename T>
+std::vector<Op<T>> GenerateInvSortedInsertions(int value_count) {
+    auto values = RandomValues<T>(value_count);
     sort(values.rbegin(), values.rend());
-    std::vector<Op> ops;
-    InsertionsFromValues(ops, values);
+    std::vector<Op<T>> ops;
+    InsertionsFromValues<T>(ops, values);
   
     return ops;
 }

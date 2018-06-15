@@ -1,6 +1,6 @@
-#include "tree_iter.hpp"
-#include "tree_rec.hpp"
-#include "tree_rec2.hpp"
+#include "../trees/tree_iter.hpp"
+#include "../trees/tree_rec.hpp"
+#include "../trees/tree_rec2.hpp"
 #include <iostream>
 #include <vector>
 #include <set>

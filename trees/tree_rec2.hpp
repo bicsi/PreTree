@@ -1,7 +1,11 @@
 #pragma once
 #include <algorithm>
 #include <functional>
+#include "../constants.hpp"
 
+// Implementation of PreTree
+// Recursive version 2
+// The main difference is that push, pop uses swap instead of assignments
 class PreTreeX_Rec {
     struct Node {
         int value;
@@ -14,18 +18,15 @@ class PreTreeX_Rec {
 
     public:
     
-    void insert(int value) { root = _insert(root, value, 31); }
+    void Insert(int value) { root = _insert(root, value, BIT_COUNT - 1); }
     
-    PNode LowerBound(int value) { return lookup(root, value, 31, 0); }
-    PNode UpperBound(int value) { return lookup(root, value, 31, 1); }
+    void Erase(int value) { root = _erase(root, value, BIT_COUNT - 1); }
     
-    void erase(int value) { root = _erase(root, value, 31); }
-    
-    PNode Find(int value) {
+    bool Find(int value) {
         auto ret = LowerBound(value);
         if (ret == nullptr || ret->value != value) 
-            return nullptr;
-        return ret;
+            return false;
+        return true;
     }
 
     void ForEach(std::function<void(int)> f) { for_each(root, f); }

@@ -6,3 +6,5 @@ echo "Checking iter"
 ./_check iter 100 50 100
 echo "Checking vec"
 ./_check vec 100 50 100
+echo "Checking rrec"
+./_check rrec 100 50 100

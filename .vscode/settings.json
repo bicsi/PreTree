@@ -25,6 +25,24 @@
         "__config": "cpp",
         "__nullptr": "cpp",
         "__split_buffer": "cpp",
-        "list": "cpp"
+        "list": "cpp",
+        "__tree": "cpp",
+        "map": "cpp",
+        "set": "cpp",
+        "__hash_table": "cpp",
+        "__string": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "slist": "cpp",
+        "array": "cpp",
+        "forward_list": "cpp",
+        "initializer_list": "cpp",
+        "valarray": "cpp",
+        "*.ipp": "cpp",
+        "__locale": "cpp",
+        "thread": "cpp",
+        "__tuple": "cpp"
     }
 }
