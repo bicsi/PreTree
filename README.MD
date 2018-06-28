@@ -1,5 +1,5 @@
 # PreTree - an easy to implement memory-efficient trie
-## Based on the Bachelor thesis for University of Bucharest
+#### Based on the Bachelor thesis for University of Bucharest
 
 
 
