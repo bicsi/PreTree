@@ -9,6 +9,8 @@ The PreTree is an easy to implement and (very) memory-efficient data structure c
 All implementations inside this repo are based on the following paper:
 *"Memory-efficient and easy data structure for dynamic sets"*
 
+The paper can be found by accessing `paper.pdf`.
+
 ## Contents
 The application contains three main components: the implementations of the data structure, a testing tool, and a benchmarking tool.
 
