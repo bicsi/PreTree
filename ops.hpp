@@ -31,7 +31,7 @@ template<typename T> T RandomValue();
 template<> int RandomValue() { return rand() & ((1 << BIT_COUNT) - 1); }
 template<> std::string RandomValue() {
     std::string ret = "";
-    for (int i = 0; i < BIT_COUNT; ++i) {
+    for (int i = 0; i < BIT_COUNT_STRING; ++i) {
         ret += 'a' + rand() % SIGMA;
     }
     return ret;

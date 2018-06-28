@@ -21,6 +21,14 @@ class PreTrie_Iter {
             memset(children, 0, sizeof(children)); 
             children_mask = 0;
         }; 
+        // Node destructor
+        ~Node() {
+            for (int cid = FirstChildId(); cid != -1; cid = FirstChildId()) {
+                delete children[cid];
+                children[cid] = nullptr;
+                children_mask ^= (1 << cid);
+            }
+        }
 
         // Getter/setter wrappers for children
         Node* GetChild(char c) const { return children[c - 'a']; }

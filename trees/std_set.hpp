@@ -4,10 +4,6 @@
 #include <functional>
 #include "../constants.hpp"
 
-template<typename T> T Default();
-template<> int Default() { return DEFAULT_VALUE; }
-template<> std::string Default() { return DEFAULT_VALUE_STRING; }
-
 // Wrapper of std::set
 template<typename T>
 class StdSet {

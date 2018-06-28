@@ -5,7 +5,9 @@
 #include "../trees/tree_vector.hpp"
 #include "../trees/treer_rec.hpp"
 #include "../tries/trie_iter.hpp"
+#include "../trees/treap.hpp"
 #include "../trees/std_set.hpp"
+#include "../tries/basictrie.hpp"
 
 using namespace std;
 
@@ -88,7 +90,9 @@ int main(int argc, char** argv) {
         else if (tree_type == "rec") RunTest<PreTree_Rec, int>(values_per_test, ops_per_test);
         else if (tree_type == "vec") RunTest<PreTree_Vec, int>(values_per_test, ops_per_test);
         else if (tree_type == "rrec") RunTest<PreTreeR_Rec, int>(values_per_test, ops_per_test);
+        else if (tree_type == "treap") RunTest<Treap<int>, int>(values_per_test, ops_per_test);
         else if (tree_type == "trie") RunTest<PreTrie_Iter, std::string>(values_per_test, ops_per_test);
+        else if (tree_type == "basictrie") RunTest<BasicTrie, std::string>(values_per_test, ops_per_test);
         else {
             cout << "UNKNOWN TREE TYPE: " << tree_type << endl;
             exit(-1);
