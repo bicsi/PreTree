@@ -21,9 +21,9 @@ The implementations for the *PreTree* and *PreTrie* data structures, in differen
 The fuzz testing tool can be found in the `tests` directory, namely `tests/property_test.cpp`. It can be run via command line, by running ` ./a.out TREE_TYPE TEST_COUNT VALUES_PER_TEST OPERATIONS_PER_TEST`, where `TREE_TYPE` is an enum, and its values should be easily extrapolated by reading the source code. 
 
 ##### Benchmarking tool
-The benchmarking tool can be found in the `tests` directory, namely `tests/ins_ers_test.cpp`. It can be run via command line, by running ` ./a.out VALUE_COUNT OPERATION_COUNT DATA_TYPE DATASETS`, where `DATA_TYPE` is one of `int`, `string`, and `DATASETS` is the list of datasets, potentially separated by a `|` character. Potential datasets are `RAND`, `INC`, `DEC`, `PERM`. Please refer to the implementation for more details
+The benchmarking tool can be found in the `tests` directory, namely `tests/ins_ers_test.cpp`. It can be run via command line, by running ` ./a.out VALUE_COUNT OPERATION_COUNT DATA_TYPE DATASETS`, where `DATA_TYPE` is one of `int`, `string`, and `DATASETS` is the list of datasets, potentially separated by a `,` character. Potential datasets are `RAND`, `INC`, `DEC`, `PERM`. Please refer to the implementation for more details
 
-Example usage: `./a.out 100000 1000000 int INC|DEC` will run a benchmark test of `1,000,000` operations on a set of `100,000` values (initially empty), on the sorted insertions and reverse-sorted insertions datasets.
+Example usage: `./a.out 100000 1000000 int INC,DEC` will run a benchmark test of `1,000,000` operations on a set of `100,000` values (initially empty), on the sorted insertions and reverse-sorted insertions datasets.
 
 ##### Console
 The filem `main.cpp` found inside the root directory of the repo is a console-like application for testing the implementations manually. It can be modified at will to test any of the data structures, as long as it has the proper interface.

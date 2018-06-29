@@ -46,16 +46,16 @@ void BenchmarkTrees(vector<Op<int>> ops) {
 
 void BenchmarkTries(vector<Op<string>> ops) {
     cout << "--------------------------" << endl;
-//    cout << "PreTrie iterative: " << BenchmarkSet<PreTrie_Iter, string>(ops) << "s" << endl;
-//    cout << "BasicTrie: " << BenchmarkSet<BasicTrie, string>(ops) << "s" << endl;
-//    cout << "Treap: " << BenchmarkSet<Treap<string>, string>(ops) << "s" << endl;
+    cout << "PreTrie iterative: " << BenchmarkSet<PreTrie_Iter, string>(ops) << "s" << endl;
+    cout << "BasicTrie: " << BenchmarkSet<BasicTrie, string>(ops) << "s" << endl;
+    cout << "Treap: " << BenchmarkSet<Treap<string>, string>(ops) << "s" << endl;
     cout << "STD Set: " << BenchmarkSet<StdSet<string>, string>(ops) << "s" << endl;
     cout << "STD Unordered set: " << BenchmarkSet<StdUnorderedSet<string>, string>(ops) << "s" << endl;
     cout << "--------------------------" << endl << endl;
 }
 
 int main(int argc, char** argv) {
-    int REQUIRED_ARGS = 3;
+    int REQUIRED_ARGS = 4;
     if (argc != REQUIRED_ARGS + 1) {
         cout << "Wrong number of arguments (got " << argc - 1 << ", expected " << REQUIRED_ARGS << ")" << endl;
         exit(-1);
@@ -64,26 +64,33 @@ int main(int argc, char** argv) {
     srand(time(0));
     int value_count = stoi(argv[1]);
     int op_count = stoi(argv[2]);
-    string typ = argv[3];
+    string data_type = argv[3];
+    string typ = argv[4];
 
-    if (0) {
+    if (data_type == "int") {
         cout << "_________________________________________" << endl;
         cout << "TESTING PRETREE" << endl;
         cout << "_________________________________________" << endl;
         cout << endl;
 
-        cout << "Testing on " << op_count << " random operations..." << endl << endl;
-        BenchmarkTrees(GenerateOps<int>(value_count, op_count, false));
-
-        cout << "Testing on " << op_count << " sorted inserions..." << endl << endl;
-        BenchmarkTrees(GenerateSortedInsertions<int>(op_count));
-
-        cout << "Testing on " << op_count << " inverse sorted inserions..." << endl << endl;
-        BenchmarkTrees(GenerateInvSortedInsertions<int>(op_count));
-
-        cout << "Testing on 1:" << op_count << "..." << endl << endl;
-        BenchmarkTrees(GeneratePermutationInsertions(op_count));
-    } else {
+        if (typ.find("RAND") != string::npos) {
+          cout << "Testing on " << op_count << " random operations..." << endl << endl;
+          BenchmarkTrees(GenerateOps<int>(value_count, op_count, false));
+        }
+        if (typ.find("INC") != string::npos) {
+          cout << "Testing on " << op_count << " sorted inserions..." << endl << endl;
+          BenchmarkTrees(GenerateSortedInsertions<int>(op_count));
+        }
+        if (typ.find("DEC") != string::npos) {
+          cout << "Testing on " << op_count << " inverse sorted inserions..." << endl << endl;
+          BenchmarkTrees(GenerateInvSortedInsertions<int>(op_count));
+        }
+        if (typ.find("PERM") != string::npos) {
+          cout << "Testing on 1:" << op_count << "..." << endl << endl;
+          BenchmarkTrees(GeneratePermutationInsertions(op_count));
+        }
+    }
+    if (data_type == "string") {
         cout << "_________________________________________" << endl;
         cout << "TESTING PRETRIE" << endl;
         cout << "_________________________________________" << endl;
